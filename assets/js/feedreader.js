@@ -20,6 +20,8 @@ $(function () {
             alert('Erro ao ler o feed: ' + erro);
         },
         success: function (xml) {
+            $("#result").html('');
+            
             values = xml.responseData.feed.entries;
             for(var i = 0; i < values.length; i++) {
                 var value = values[i];
