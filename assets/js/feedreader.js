@@ -1,5 +1,7 @@
 $(function () {
 
+    var count = 0;
+
     var getDate = function(raw) {
         var monthNames = [
           "Janeiro", "Fevereiro", "Março",
@@ -21,7 +23,7 @@ $(function () {
         return str[0];
     };
 
-    // var urlRss = 'http://mbeck.com.br/blog/feed/';
+    var oldUrlRss = 'http://mbeck.com.br/blog/feed/';
     var urlRss = 'https://blog.mbeck.com.br/feed/tagged/programadores';
     //var urlRss = 'https://medium.com/feed/@beckenkamp';
     $.ajax({
@@ -50,8 +52,47 @@ $(function () {
                 else
                     div.addClass('6u$ 12u$(xsmall)');
 
+                count++;
+
                 $("#result").append(div);
-            }    
+            }
         }
     });
+
+    if (count<10) {
+        $.ajax({
+            type: "GET",
+            url: document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=1000&callback=?&q=' + encodeURIComponent(oldUrlRss),
+            dataType: 'json',
+            error: function (xhr) {
+                var erro = xhr.responseText;
+                console.log('Erro ao ler o feed: ' + erro);
+            },
+            success: function (xml) {
+                values = xml.responseData.feed.entries;
+                for(var i = 0; i < values.length; i++) {
+                    var value = values[i];
+                    var div = $("<article />");
+
+                    var html = "<header><h4><a href='" + value.link + "'>" + value.title + "</a></h4>"+
+                               "<p>" + getDate(value.publishedDate) + "</p></header>" +
+                               "<p>" + cleanSnippet(value.contentSnippet) + "</p>";
+
+                    div.html(html);
+
+                    count++;
+                    console.log(count);
+
+                    if (count<=10) {
+                        if (count%2 != 0)
+                            div.addClass('6u 12u$(xsmall)');
+                        else
+                            div.addClass('6u$ 12u$(xsmall)');
+                    
+                        $("#result").append(div);
+                    }
+                }
+            }
+        });
+    }
 });
