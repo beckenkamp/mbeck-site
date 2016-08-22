@@ -1,16 +1,29 @@
 $(function () {
 
-    var getCategory = function(category) {
-        if (category == 'Tecnologia' || category == 'Informática') {
-            return 'Desenvolvimento Web';
-        } else if (category == 'Papo Light' || category == 'Empreendedorismo') {
-            return 'Crônicas';
-        } else if (category == 'Quadrinhos' || category == 'Ilustração') {
-            return 'Arte';
-        }
+    var getDate = function(raw) {
+        var monthNames = [
+          "Janeiro", "Fevereiro", "Março",
+          "Abril", "Maio", "Junho", "Julho",
+          "Agosto", "Setembro", "Outubro",
+          "Novembro", "Dezembro"
+        ];
+
+        var date = new Date(raw);
+        var day = date.getDate();
+        var monthIndex = date.getMonth();
+        var year = date.getFullYear();
+
+        return day + ' de ' + monthNames[monthIndex] + ' de ' + year;
     };
 
-    var urlRss = 'http://mbeck.com.br/blog/feed/';
+    var cleanSnippet = function(string) {
+        var str = string.split("Continue reading on");
+        return str[0];
+    };
+
+    // var urlRss = 'http://mbeck.com.br/blog/feed/';
+    var urlRss = 'https://blog.mbeck.com.br/feed/tagged/programadores';
+    //var urlRss = 'https://medium.com/feed/@beckenkamp';
     $.ajax({
         type: "GET",
         url: document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=1000&callback=?&q=' + encodeURIComponent(urlRss),
@@ -28,8 +41,7 @@ $(function () {
                 var div = $("<article />");
 
                 var html = "<header><h4><a href='" + value.link + "'>" + value.title + "</a></h4>"+
-                           "<p>" + getCategory(value.categories[0]) + "</p></header>" +
-                           "<p>" + value.contentSnippet + "</p>";
+                           "<p>" + cleanSnippet(value.contentSnippet) + " - " + getDate(value.publishedDate) + "</p></header>";
 
                 div.html(html);
                 
