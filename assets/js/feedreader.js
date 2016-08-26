@@ -24,7 +24,7 @@ $(function () {
     };
 
     var oldUrlRss = 'http://mbeck.com.br/blog/feed/';
-    var urlRss = 'https://blog.mbeck.com.br/feed/tagged/programadores';
+    var urlRss = 'https://blog.mbeck.com.br/feed';
     //var urlRss = 'https://medium.com/feed/@beckenkamp';
     $.ajax({
         type: "GET",
